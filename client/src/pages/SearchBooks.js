@@ -10,14 +10,16 @@ import {
   Card,
   CardColumns,
 } from "react-bootstrap";
+import { useMutation } from "@apollo/client";
 import { SAVE_BOOK } from "../utils/mutations";
-import { useMutation } from "./@apollo/client";
+
 import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
 
 const SearchBooks = () => {
   const [searchedBooks, setSearchedBooks] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
+  const [bookSave, { error }] = useMutation(SAVE_BOOK);
 
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
@@ -34,14 +36,14 @@ const SearchBooks = () => {
       const response = await searchGoogleBooks(searchInput);
 
       if (!response.ok) {
-        throw new Error("Error: Something went wrong!");
+        throw new error("Error: Something went wrong!");
       }
 
       const { items } = await response.json();
 
       const bookData = items.map((book) => ({
         bookId: book.id,
-        authors: book.volumeInfor.authors || ["Search failed"],
+        authors: book.volumeInfo.authors || ["Search failed"],
         description: book.volumeInfo.description,
         title: book.volumeInfo.title,
         image: book.volumeInfo.imageLinks?.thumbnail || "",
@@ -57,13 +59,27 @@ const SearchBooks = () => {
 
   const handleSaveBook = async (bookId) => {
     const bookToAdd = searchedBooks.find((book) => book.bookId === bookId);
-    const [bookSave, { data }] = useMutation(SAVE_BOOK);
-    const { data } = await bookSave({
-      variables: {
-        input: bookToAdd,
-      },
-    });
-  };
+    // const [bookSave, { error }] = useMutation(SAVE_BOOK);
+    
+    const token = Auth.loggedIn()? Auth.getToken() : null;
+
+    if(!token) { 
+        return false;
+    }
+
+    try { 
+        await bookSave({ 
+            variables: {input:bookToAdd}
+        }); 
+
+        if (Error) { throw new Error('Cannot save at this time')}
+    
+    
+    setSavedBookIds([...savedBookIds, bookToAdd.bookId]);
+    } catch (err) { 
+        console.error(err)
+    }
+};
 
   return (
     <>

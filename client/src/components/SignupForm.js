@@ -5,11 +5,11 @@ import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
 
 const SignupForm = () => {
-  // set initial form state
+  
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
-  // set state for form validation
+
   const [validated] = useState(false);
-  // set state for alert
+ 
   const [showAlert, setShowAlert] = useState(false);
 
   const handleInputChange = (event) => {
@@ -20,7 +20,7 @@ const SignupForm = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    // check if form has everything (as per react-bootstrap docs)
+ 
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -54,7 +54,7 @@ const SignupForm = () => {
       {/* This is needed for the validation functionality above */}
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
         {/* show alert if server response is bad */}
-        <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
+        <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='primary'>
           Something went wrong with your signup!
         </Alert>
 
@@ -62,7 +62,7 @@ const SignupForm = () => {
           <Form.Label htmlFor='username'>Username</Form.Label>
           <Form.Control
             type='text'
-            placeholder='Your username'
+            placeholder='Username'
             name='username'
             onChange={handleInputChange}
             value={userFormData.username}
@@ -75,7 +75,7 @@ const SignupForm = () => {
           <Form.Label htmlFor='email'>Email</Form.Label>
           <Form.Control
             type='email'
-            placeholder='Your email address'
+            placeholder='Email address'
             name='email'
             onChange={handleInputChange}
             value={userFormData.email}
@@ -88,7 +88,7 @@ const SignupForm = () => {
           <Form.Label htmlFor='password'>Password</Form.Label>
           <Form.Control
             type='password'
-            placeholder='Your password'
+            placeholder='Password'
             name='password'
             onChange={handleInputChange}
             value={userFormData.password}

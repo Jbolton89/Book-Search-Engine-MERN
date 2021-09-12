@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Auth from "../utils/auth";
 import { GET_ME } from "../utils/queries";
+import { REMOVE_BOOK } from '../utils/mutations'
 import { useMutation, useQuery } from "@apollo/client";
 import {
   Jumbotron,
@@ -12,7 +13,11 @@ import {
 
 const SavedBooks = () => {
   const { loading, data } = useQuery(GET_ME);
-  const userData = data?.me || data?.user || {};
+  const [removeBookId, { error }] = useMutation(REMOVE_BOOK);
+  const [userData, setUserData] = useState({});
+  
+  
+  const userDataAuth = data?.me || data?.user || {};
 
   if (loading) {
     return (
@@ -22,7 +27,7 @@ const SavedBooks = () => {
     );
   }
 
-  if (!userData?._id) {
+  if (!userDataAuth?._id) {
     return <h1>Authority failed. You will need to log in.</h1>;
   }
 
@@ -37,14 +42,14 @@ const SavedBooks = () => {
       const response = await handleDeleteBook(bookId, token);
 
       if (!response.ok) {
-        throw new Error("Error: Something went wrong!");
+        throw new error("Error: Something went wrong!");
       }
 
       const updateUser = await response.json();
       setUserData(updateUser);
       removeBookId(bookId);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

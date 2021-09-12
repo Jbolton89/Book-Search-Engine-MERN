@@ -3,9 +3,13 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
+  createHttpLink,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import SavedBooks from './pages/SavedBooks';
+import SearchBooks from './pages/SearchBooks';
+import Navbar from './components/Navbar';
 
 // GraphQL endpoint
 const httpLink = createHttpLink({
